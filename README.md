@@ -2,7 +2,7 @@
 [![](https://github.com/emacs-ng/emacs-ng/workflows/CI/badge.svg)](https://github.com/emacs-ng/emacs-ng/actions?query=workflow%3ACI)
 [![](https://img.shields.io/reddit/subreddit-subscribers/emacsng?label=Join%20r%2Femacsng&style=social)](https://www.reddit.com/r/emacsng/)
 
-[![](https://img.shields.io/matrix/emacs-ng)](https://gitter.im/emacsng/community)
+[![](https://img.shields.io/badge/chat-42%20users-brightgreen)](https://gitter.im/emacsng/community)
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
