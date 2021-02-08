@@ -16,6 +16,7 @@ use lisp::{
 };
 
 use libc;
+use std;
 
 pub fn git_repo(path: LispStringRef) -> Repository {
     match Repository::init(Path::new(path.to_utf8().as_str())) {
@@ -43,6 +44,19 @@ pub fn git_blame_file_rs<'a>(repo: &'a Repository, path: LispStringRef) -> Blame
 //     }
 // }
 
+// pub fn git_oid_to_obj(oid: Oid) -> LispObject {
+//     let mut dst = [0u8; 20 * 2 + 1];
+//     unsafe {
+//         raw::git_oid_tostr(
+//             dst.as_mut_ptr() as *mut libc::c_char,
+//             dst.len() as libc::size_t,
+//             &self.raw,
+//         );
+//     }
+//     let s = &dst[..dst.iter().position(|&a| a == 0).unwrap()];
+//     str::from_utf8(s).unwrap().fmt(f)
+// }
+
 #[lisp_fn]
 pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
     unsafe {
@@ -68,26 +82,34 @@ pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
                 ("author-mail", git_author_mail(&orig_rev))
             );
 
-            let id = make_string(oid.as_bytes().to_vec().as_mut_ptr() as *mut libc::c_char, 20);
+            let s = format!("{:?}", oid);
+            let id = make_string_from_utf8(
+                s.as_ptr() as *const libc::c_char,
+                s.chars().count() as isize,
+            );
+
             let chunk_list = list!(("commit", id));
 
-            return id;
+            let orig_line = hunk.orig_start_line();
+            let final_line = hunk.final_start_line();
+            let num_lines = hunk.lines_in_hunk();
 
-            // let chunk_list = list!(
-            //     ("commit", ),
-            //     ("orig-line", ),
-            //     ("final-line", ),
-            //     ("num-lines", )
-            // );
+            let chunk_list = list!(
+                ("commit", id),
+                ("orig-line", LispObject::from(orig_line)),
+                ("final-line", LispObject::from(final_line)),
+                ("num-lines", LispObject::from(num_lines))
+            );
 
-            // let chunk: LispObject = call0(LispObject::from(intern("my-magit-make-chunk")));
+            let chunk: LispObject =
+                call1(LispObject::from(intern("my-magit-make-chunk")), chunk_list);
 
-            // call3(
-            //     LispObject::from(intern("magit-blame--make-overlays")),
-            //     buf,
-            //     chunk,
-            //     rev_list,
-            // );
+            call3(
+                LispObject::from(intern("magit-blame--make-overlays")),
+                buf,
+                chunk,
+                rev_list,
+            );
         }
     }
     LispObject::from(1)
