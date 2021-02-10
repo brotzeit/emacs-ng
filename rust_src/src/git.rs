@@ -62,7 +62,7 @@ pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
     unsafe {
         let p = git_repo(path);
 
-        let buf = call0(LispObject::from(intern("current-buffer")));
+        // let buf = call0(LispObject::from(intern("current-buffer")));
 
         let blame_iter = git_blame_file_rs(&p, file);
 
@@ -88,28 +88,33 @@ pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
                 s.chars().count() as isize,
             );
 
-            let chunk_list = list!(("commit", id));
-
-            let orig_line = hunk.orig_start_line();
-            let final_line = hunk.final_start_line();
-            let num_lines = hunk.lines_in_hunk();
+            // let orig_line = hunk.orig_start_line();
+            // let final_line = hunk.final_start_line();
+            // let num_lines = hunk.lines_in_hunk();
 
             let chunk_list = list!(
                 ("commit", id),
-                ("orig-line", LispObject::from(orig_line)),
-                ("final-line", LispObject::from(final_line)),
-                ("num-lines", LispObject::from(num_lines))
+                ("orig-line", LispObject::from(hunk.orig_start_line())),
+                ("final-line", LispObject::from(hunk.final_start_line())),
+                ("num-lines", LispObject::from(hunk.lines_in_hunk()))
             );
 
-            let chunk: LispObject =
-                call1(LispObject::from(intern("my-magit-make-chunk")), chunk_list);
-
-            call3(
-                LispObject::from(intern("magit-blame--make-overlays")),
-                buf,
-                chunk,
+            call2(
+                LispObject::from(intern("my-magit-chunk-and-make-overlays")),
+                chunk_list,
                 rev_list,
             );
+
+            // let chunk: LispObject =
+            //     call1(LispObject::from(intern("my-magit-make-chunk")), chunk_list);
+
+            // call3(
+            //     LispObject::from(intern("magit-blame--make-overlays")),
+            //     buf,
+            //     chunk,
+            //     rev_list,
+            // );
+            return LispObject::from(1);
         }
     }
     LispObject::from(1)
