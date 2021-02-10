@@ -88,15 +88,15 @@ pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
                 s.chars().count() as isize,
             );
 
-            // let orig_line = hunk.orig_start_line();
-            // let final_line = hunk.final_start_line();
-            // let num_lines = hunk.lines_in_hunk();
+            let orig_line = hunk.orig_start_line();
+            let final_line = hunk.final_start_line();
+            let num_lines = hunk.lines_in_hunk();
 
             let chunk_list = list!(
                 ("commit", id),
-                ("orig-line", LispObject::from(hunk.orig_start_line())),
-                ("final-line", LispObject::from(hunk.final_start_line())),
-                ("num-lines", LispObject::from(hunk.lines_in_hunk()))
+                ("orig-line", LispObject::from(orig_line)),
+                ("final-line", LispObject::from(final_line)),
+                ("num-lines", LispObject::from(num_lines))
             );
 
             call2(
@@ -114,22 +114,13 @@ pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
             //     chunk,
             //     rev_list,
             // );
-            return LispObject::from(1);
+
+
+            // return LispObject::from(1);
         }
     }
     LispObject::from(1)
 }
-
-// #[lisp_fn]
-// pub fn git_make_chunk() -> LispObject {
-//     unsafe {
-//         return call!(
-//             LispObject::from(intern("magit-blame-chunk")),
-//             LispObject::from(intern("orig-rev")),
-//             LispObject::from(121)
-//         );
-//     }
-// }
 
 pub fn git_commit<'a>(repo: &'a Repository, oid: Oid) -> Commit<'a> {
     match repo.find_commit(oid) {
