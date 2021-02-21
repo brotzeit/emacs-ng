@@ -93,33 +93,24 @@ pub fn git_blame(path: LispStringRef, file: LispStringRef) -> LispObject {
             let num_lines = hunk.lines_in_hunk();
 
             let chunk_list = list!(
-                ("commit", id),
+                ("orig-rev", id),
                 ("orig-line", LispObject::from(orig_line)),
                 ("final-line", LispObject::from(final_line)),
                 ("num-lines", LispObject::from(num_lines))
             );
+
+            // NOTE: Keep this line
+            // return list!(rev_list, chunk_list);
 
             call2(
                 LispObject::from(intern("my-magit-chunk-and-make-overlays")),
                 chunk_list,
                 rev_list,
             );
-
-            // let chunk: LispObject =
-            //     call1(LispObject::from(intern("my-magit-make-chunk")), chunk_list);
-
-            // call3(
-            //     LispObject::from(intern("magit-blame--make-overlays")),
-            //     buf,
-            //     chunk,
-            //     rev_list,
-            // );
-
-
-            // return LispObject::from(1);
         }
+
+        LispObject::from(1)
     }
-    LispObject::from(1)
 }
 
 pub fn git_commit<'a>(repo: &'a Repository, oid: Oid) -> Commit<'a> {
