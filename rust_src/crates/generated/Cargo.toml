@@ -1,0 +1,8 @@
+[package]
+name = "generated"
+version = "0.1.0"
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
