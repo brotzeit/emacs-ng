@@ -14,6 +14,7 @@ exclude = ["remacs-bindings"]
 [dependencies]
 app_units = { version = "0.7.1", optional = true }
 remacs-lib = { version = "0.1.0", path = "remacs-lib" }
+generated = { version = "0.1.0", path = "crates/generated" }
 lisp = { version = "0.1.0", path = "crates/lisp" }
 lisp-util = { version = "0.1.0", path = "crates/lisp_util" }
 lisp-macros = { version = "0.1.0", path = "crates/lisp_macros" }
